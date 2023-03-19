@@ -1,10 +1,10 @@
 import hashlib
 import telebot
 
-h = hashlib.sha256(b'meow123')
-password_hash = h.hexdigest()
+bot = telebot.TeleBot("5991855005:AAEWyzlP-Kih9JugPZZsiOPm0m1EzPEF2Zs")
 
-bot = telebot.TeleBot("5989044980:AAFXuN6EZcNDGhSKNgrNuPgdEVqp76yoUTs")
+with open('password.txt', 'r') as file:
+    password_hash = file.read().strip()
 
 
 def plus(stroka):
@@ -13,11 +13,17 @@ def plus(stroka):
 
 
 def logpass(password):
+    with open('password.txt', 'r') as file:
+        correct_password = file.read().strip()
     hp = hashlib.sha256(bytes(password, encoding ='UTF-8'))
-    if str(hp.hexdigest()) == str(password_hash):
-        return "Welcome"
+    print("Введенный пароль:", password)
+    print("Хеш введенного пароля:", hp.hexdigest())
+    print("Хеш правильного пароля:", correct_password)
+    if str(hp.hexdigest()) == str(correct_password):
+        return "верно"
     else:
-        return "Fuck You"
+        return "не верно"
+
 
 
 @bot.message_handler(commands=['start', 'help'])
@@ -34,7 +40,5 @@ def send_welcome2(message):
 def get_password(message):
     bot.reply_to(message, logpass(message.text))
 
-
-print(password_hash)
 
 bot.infinity_polling()
